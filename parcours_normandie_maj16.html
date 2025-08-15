@@ -57,11 +57,11 @@ window.onload = function() {
 		[49.420432796174595, -1.1802050316822297, "Jour 16 - La Madeleine"]
     ];
 
-    // Ajout des marqueurs avec numéros commençant à 0
+     // Ajout des marqueurs avec numéros commençant à 0
     etapes.forEach(function(e, i) {
         var icon = L.divIcon({
             className: 'marker-number',
-            html: i, // commence à 0
+            html: i,
             iconSize: [24, 24],
             iconAnchor: [12, 12]
         });
@@ -74,7 +74,11 @@ window.onload = function() {
 
     // Tracé de la ligne bleue
     var coords = etapes.map(function(e) { return [e[0], e[1]]; });
-    L.polyline(coords, { color: "blue", weight: 3 }).addTo(map);
+    var polyline = L.polyline(coords, { color: "blue", weight: 3 }).addTo(map);
+
+    // Recentre et ajuste le zoom automatiquement pour toutes les étapes
+    map.fitBounds(polyline.getBounds());
+};
 </script>
 </body>
 </html>
