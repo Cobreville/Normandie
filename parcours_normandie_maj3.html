@@ -27,7 +27,7 @@
 <div id="map"></div>
 <script>
     // Initialisation de la carte
-    var map = L.map('map').setView([49.4, 2.1], 8);
+    var map = L.map('map');
 
     // Fond de carte
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -35,7 +35,8 @@
         maxZoom: 18
     }).addTo(map);
 
-    // Tableau des étapes [latitude, longitude, nom]
+    // ====== Tableau des étapes à modifier pour chaque journée ======
+    // Format : [latitude, longitude, nom]
     var etapes = [
         [49.91053162783799, 5.614353026010077, "Jour 1 - Départ - Cobreville"],
         [49.954171212684074, 5.190907610672605, "Jour 1 - Maissin"],
@@ -46,7 +47,7 @@
     etapes.forEach(function(e, i) {
         var icon = L.divIcon({
             className: 'marker-number',
-            html: i, // commence à 0
+            html: i,
             iconSize: [24, 24],
             iconAnchor: [12, 12]
         });
@@ -59,7 +60,10 @@
 
     // Tracé de la ligne bleue
     var coords = etapes.map(function(e) { return [e[0], e[1]]; });
-    L.polyline(coords, { color: "blue", weight: 3 }).addTo(map);
+    var polyline = L.polyline(coords, { color: "blue", weight: 3 }).addTo(map);
+
+    // Recentre et ajuste le zoom automatiquement pour toutes les étapes
+    map.fitBounds(polyline.getBounds());
 </script>
 </body>
 </html>
