@@ -27,7 +27,7 @@
 <div id="map"></div>
 <script>
 window.onload = function() {
-    // Initialisation de la carte
+    // Création de la carte
     var map = L.map('map');
 
     // Fond de carte
@@ -36,8 +36,7 @@ window.onload = function() {
         maxZoom: 18
     }).addTo(map);
 
-    // ====== Tableau des étapes à modifier pour chaque journée ======
-    // Format : [latitude, longitude, nom]
+    // Tableau des étapes
     var etapes = [
         [49.91053162783799, 5.614353026010077, "Jour 1 - Départ - Cobreville"],
         [49.954171212684074, 5.190907610672605, "Jour 1 - Maissin"],
@@ -54,10 +53,10 @@ window.onload = function() {
         [49.30379, -0.32099, "Jour 13 - Lion-sur-Mer"],
         [49.3351, -0.6352, "Jour 14 - Tracy-sur-Mer"],
         [49.319279, -1.107799, "Jour 15 - Isigny-sur-Mer"],
-		[49.420432796174595, -1.1802050316822297, "Jour 16 - La Madeleine"]
+        [49.420432796174595, -1.1802050316822297, "Jour 16 - La Madeleine"]
     ];
 
-     // Ajout des marqueurs avec numéros commençant à 0
+    // Ajout des marqueurs numérotés
     etapes.forEach(function(e, i) {
         var icon = L.divIcon({
             className: 'marker-number',
@@ -69,15 +68,16 @@ window.onload = function() {
         L.marker([e[0], e[1]], {icon: icon})
             .addTo(map)
             .bindPopup(e[2])
-            .bindTooltip(e[2].split(" - ")[e[2].split(" - ").length-1], {sticky: true});
+            .bindTooltip(e[2].split(" - ").pop(), {sticky: true});
     });
 
     // Tracé de la ligne bleue
-    var coords = etapes.map(function(e) { return [e[0], e[1]]; });
+    var coords = etapes.map(e => [e[0], e[1]]);
     var polyline = L.polyline(coords, { color: "blue", weight: 3 }).addTo(map);
 
-    // Recentre et ajuste le zoom automatiquement pour toutes les étapes
+    // Centrage automatique et recalcul de la taille
     map.fitBounds(polyline.getBounds());
+    map.invalidateSize();
 };
 </script>
 </body>
