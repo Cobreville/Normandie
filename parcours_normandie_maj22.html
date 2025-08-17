@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Carte trajet vélo - Retour</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+<style>
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #map { width: 100%; height: 100%; }
+    .marker-number {
+        background-color: #dc3545; /* rouge */
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        border: 2px solid white;
+        box-shadow: 0 0 3px rgba(0,0,0,0.5);
+    }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+window.onload = function() {
+    var map = L.map('map');
+
+    // Fond de carte
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18
+    }).addTo(map);
+
+    // Étapes inversées (Utah Beach -> Cobreville)
+    var etapesRetour = [
+        [49.420432796174595, -1.1802050316822297, "Jour 16 - Utah Beach / La Madeleine"],
+        [49.319279, -1.107799, "Jour 17 - Isigny-sur-Mer"],
+        [49.3351, -0.6352, "Jour 18 - Tracy-sur-Mer"],
+        [49.30379, -0.32099, "Jour 19 - Lion-sur-Mer"],
+        [49.30601067454044, -0.07120990753173828, "Jour 20 - Houlgate"],
+        [49.2459, 0.4494, "Jour 21 - Saint-Sylvestre-de-Cormeilles"],
+        [49.241547, 0.703205, "Jour 22 - Pont-Authou"]
+    ];
+
+    // Marqueurs avec numérotation de 16 à 31
+    etapesRetour.forEach(function(e, i) {
+        var icon = L.divIcon({
+            className: 'marker-number',
+            html: i + 16,   // numérotation décalée
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        });
+
+        L.marker([e[0], e[1]], {icon: icon})
+            .addTo(map)
+            .bindPopup(e[2])
+            .bindTooltip(e[2].split(" - ").pop(), {sticky: true});
+    });
+
+    // Tracé de la ligne rouge
+    var coords = etapesRetour.map(e => [e[0], e[1]]);
+    var polyline = L.polyline(coords, { color: "red", weight: 3 }).addTo(map);
+
+    // Centrage automatique
+    map.fitBounds(polyline.getBounds());
+    map.invalidateSize();
+};
+</script>
+</body>
+</html>
