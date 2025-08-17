@@ -26,8 +26,9 @@
 <body>
 <div id="map"></div>
 <script>
-    // Initialisation de la carte (temporaire, sera recentrée après)
-    var map = L.map('map').setView([49.4, 2.1], 8);
+window.onload = function() {
+    // Création de la carte
+    var map = L.map('map');
 
     // Fond de carte
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -35,17 +36,17 @@
         maxZoom: 18
     }).addTo(map);
 
-    // Tableau des étapes [latitude, longitude, nom]
+    // Tableau des étapes
     var etapes = [
         [49.91053162783799, 5.614353026010077, "Jour 1 - Départ - Cobreville"],
         [49.954171212684074, 5.190907610672605, "Jour 1 - Maissin"]
     ];
 
-    // Ajout des marqueurs avec numéros commençant à 0
+    // Ajout des marqueurs numérotés
     etapes.forEach(function(e, i) {
         var icon = L.divIcon({
             className: 'marker-number',
-            html: i, // commence à 0
+            html: i,
             iconSize: [24, 24],
             iconAnchor: [12, 12]
         });
@@ -53,15 +54,17 @@
         L.marker([e[0], e[1]], {icon: icon})
             .addTo(map)
             .bindPopup(e[2])
-            .bindTooltip(e[2].split(" - ")[e[2].split(" - ").length-1], {sticky: true});
+            .bindTooltip(e[2].split(" - ").pop(), {sticky: true});
     });
 
     // Tracé de la ligne bleue
-    var coords = etapes.map(function(e) { return [e[0], e[1]]; });
+    var coords = etapes.map(e => [e[0], e[1]]);
     var polyline = L.polyline(coords, { color: "blue", weight: 3 }).addTo(map);
 
-    // CENTRAGE automatique sur le parcours
+    // Centrage automatique et recalcul de la taille
     map.fitBounds(polyline.getBounds());
+    map.invalidateSize();
+};
 </script>
 </body>
 </html>
